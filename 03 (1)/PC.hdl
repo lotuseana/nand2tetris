@@ -14,13 +14,15 @@ CHIP PC {
     OUT out[16];
     
     PARTS:
-    Mux16(a= in, b= false, sel= reset, out= a);
-    Register(in= a, load= load, out= b);
-    Inc16(in= c, out= c0);
-    Register(in= c0, load= inc, out= c);
-    Mux16(a= c, b= b, sel= load, out= out);
+    Inc16(in= o, out= inced);
 
- //   Not(in=inc, out=nInc);
- //  ALU(x= in, y[0]=true, y[1..15]=false, zx= false, nx= false, zy= nInc, ny= false, f= true, no= false, out= out, zr= z, ng= n);
+    Mux16(a=in, b=inced, sel=inc, out=a0);
+    Mux16(a=a0, b=in, sel=load, out=a1);
+    Mux16(a= a1, b= false, sel= reset, out= a2);
+
+    Or(a= reset, b= load, out= c);
+    Or(a= c, b= inc, out= d);
+    Register(in= a2, load= d, out=o, out= out);
+
     
 }
